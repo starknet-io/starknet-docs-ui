@@ -6,4 +6,56 @@
 <script src="{{uiRootPath}}/js/vendor/custom.js?new"></script>
 <script async src="{{{uiRootPath}}}/js/vendor/tabs.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-{{#if page.component}}<script src="{{{uiRootPath}}}/js/chatbot.js" async></script>{{/if}}
+{{#if page.component}}
+  <!-- Load the chat script from the Cairo Book -->
+  <script src="https://book.cairo-lang.org/theme/chat.js" async></script>
+  <link rel="stylesheet" href="https://book.cairo-lang.org/theme/css/chat.css">
+
+  <!-- Initialize chat and apply scoped custom properties -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatStyles = {
+        '--bg': 'white',
+        '--links': 'hsl(240, 100.00%, 63.50%)',
+        '--sidebar-bg': 'whitesmoke',
+        '--fg': '#2a2e30'
+      };
+
+      const applyChatStyles = (element) => {
+        if (element) {
+          for (const property in chatStyles) {
+            element.style.setProperty(property, chatStyles[property]);
+          }
+        }
+      };
+
+      const initializeChat = () => {
+        if (window.chatManager) {
+          // Get the two root-chat elements created by chat.js
+          const chatWindow = document.getElementById('chat-window');
+          const chatButton = document.getElementById('chat-button');
+
+          // Apply the custom properties directly to the elements - and their children
+          applyChatStyles(chatWindow);
+          applyChatStyles(chatButton);
+
+
+          // --- Added Code ---
+          // Find the title element within the chat window
+          const chatTitle = chatWindow.querySelector('.chat-title');
+          // Check if the title element exists and update its text
+          if (chatTitle) {
+            chatTitle.textContent = 'Starknet Assistant';
+          }
+          // --- End Added Code ---
+
+        } else {
+          // If chatManager isn't ready yet, wait and try again
+          setTimeout(initializeChat, 100);
+        }
+      };
+
+      initializeChat();
+    });
+  </script>
+{{/if}}
