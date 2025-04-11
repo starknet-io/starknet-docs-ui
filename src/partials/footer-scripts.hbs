@@ -7,11 +7,19 @@
 <script async src="{{{uiRootPath}}}/js/vendor/tabs.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 {{#if page.component}}
-  <!-- Load the chat script from the Cairo Book -->
+  <!-- Define configuration BEFORE loading chat.js to apply custom settings -->
+  <script>
+    window.chatExternalConfig = {
+      CHAT_TITLE: 'Starknet Assistant',
+      CHAT_PLACEHOLDER: 'Ask me anything about Starknet...'
+    };
+  </script>
+
+  <!-- Load the chat script & styling from the Cairo Book -->
   <script src="https://book.cairo-lang.org/theme/chat.js" async></script>
   <link rel="stylesheet" href="https://book.cairo-lang.org/theme/css/chat.css">
 
-  <!-- Initialize chat and apply scoped custom properties -->
+  <!-- Initialize styling with proper variables -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const chatStyles = {
@@ -29,33 +37,23 @@
         }
       };
 
-      const initializeChat = () => {
-        if (window.chatManager) {
-          // Get the two root-chat elements created by chat.js
-          const chatWindow = document.getElementById('chat-window');
-          const chatButton = document.getElementById('chat-button');
+      const initializeChatStyling = () => {
+        // Check if chatManager has created the elements
+        const chatWindow = document.getElementById('chat-window');
+        const chatButton = document.getElementById('chat-button');
 
-          // Apply the custom properties directly to the elements - and their children
+        if (chatWindow && chatButton) {
+          // Apply the custom properties directly to the elements
           applyChatStyles(chatWindow);
           applyChatStyles(chatButton);
-
-
-          // --- Added Code ---
-          // Find the title element within the chat window
-          const chatTitle = chatWindow.querySelector('.chat-title');
-          // Check if the title element exists and update its text
-          if (chatTitle) {
-            chatTitle.textContent = 'Starknet Assistant';
-          }
-          // --- End Added Code ---
-
         } else {
-          // If chatManager isn't ready yet, wait and try again
-          setTimeout(initializeChat, 100);
+          // If elements aren't ready yet, wait and try again
+          // This might happen if chat.js loads *after* DOMContentLoaded due to 'async'
+          setTimeout(initializeChatStyling, 100);
         }
       };
 
-      initializeChat();
+      initializeChatStyling();
     });
   </script>
 {{/if}}
